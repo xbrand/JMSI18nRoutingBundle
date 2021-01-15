@@ -99,6 +99,9 @@ class I18nRouter extends Router
      */
     public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
+        // Always force absolute
+        $referenceType = self::ABSOLUTE_URL;
+
         // determine the most suitable locale to use for route generation
         $currentLocale = $this->context->getParameter('_locale');
         if (isset($parameters['_locale'])) {
@@ -115,6 +118,7 @@ class I18nRouter extends Router
             $referenceType = self::NETWORK_PATH === $referenceType ? self::NETWORK_PATH : self::ABSOLUTE_URL;
         }
         $needsHost = self::NETWORK_PATH === $referenceType || self::ABSOLUTE_URL === $referenceType;
+        $needsHost = true;
 
         $generator = $this->getGenerator();
 
@@ -125,7 +129,7 @@ class I18nRouter extends Router
         }
 
         try {
-            $url = $generator->generate($locale.I18nLoader::ROUTING_PREFIX.$name, $parameters, $referenceType);
+            $url = $generator->generate($locale.I18nLoader::ROUTING_PREFIX.$name, $parameters, self::ABSOLUTE_URL);
 
             if ($needsHost && $this->hostMap) {
                 $this->context->setHost($currentHost);
@@ -186,10 +190,12 @@ class I18nRouter extends Router
         }
 
         $request = $this->getRequest();
+        $managed = false;
 
         if (isset($params['_locales'])) {
             if (false !== $pos = strpos($params['_route'], I18nLoader::ROUTING_PREFIX)) {
                 $params['_route'] = substr($params['_route'], $pos + strlen(I18nLoader::ROUTING_PREFIX));
+                $managed = true;
             }
 
             if (!($currentLocale = $this->context->getParameter('_locale'))
@@ -240,6 +246,11 @@ class I18nRouter extends Router
             $params['_locale'] = $currentLocale;
         } else if (isset($params['_locale']) && 0 < $pos = strpos($params['_route'], I18nLoader::ROUTING_PREFIX)) {
             $params['_route'] = substr($params['_route'], $pos + strlen(I18nLoader::ROUTING_PREFIX));
+            $managed = true;
+        }
+
+        if (!$managed) {
+            return $params;
         }
 
         // check if the matched route belongs to a different locale on another host
