@@ -23,6 +23,7 @@ use Symfony\Component\DependencyInjection\Compiler\ResolveDefinitionTemplatesPas
 use JMS\I18nRoutingBundle\DependencyInjection\Compiler\SetRouterPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface.php;
 
 /**
  * JMSI18nRoutingBundle.
@@ -36,7 +37,7 @@ class JMSI18nRoutingBundle extends Bundle
         $container->addCompilerPass(new SetRouterPass());
     }
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         return new JMSI18nRoutingExtension();
     }
