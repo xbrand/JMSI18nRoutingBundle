@@ -97,7 +97,7 @@ class I18nRouter extends Router
     /**
      * {@inheritdoc}
      */
-    public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = array(), int $referenceType = self::ABSOLUTE_PATH)
     {
         // Always force absolute
         $referenceType = self::ABSOLUTE_URL;
