@@ -151,9 +151,9 @@ class I18nRouter extends Router
     /**
      * {@inheritdoc}
      */
-    public function match($url)
+    public function match(string $pathinfo): array
     {
-        return $this->matchI18n(parent::match($url), $url);
+        return $this->matchI18n(parent::match($pathinfo), $pathinfo);
     }
 
     public function getRouteCollection()
@@ -171,7 +171,7 @@ class I18nRouter extends Router
     /**
      * To make compatible with Symfony <2.4
      */
-    public function matchRequest(Request $request)
+    public function matchRequest(Request $request): array
     {
         $matcher = $this->getMatcher();
         $pathInfo = $request->getPathInfo();
